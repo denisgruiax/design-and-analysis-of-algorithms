@@ -127,41 +127,139 @@ void preorder(NodePointer root)
 {
     NodePointer index = NULL;
 
-    if (!root)
-        return;
-
-    printf("%i, ", root->value);
-
-    if (root->first_son)
+    if (root)
     {
-        preorder(root->first_son);
+        printf("%i, ", root->value);
 
-        for (index = root->first_son->right_brother; index; index = index->right_brother)
-            preorder(index);
+        if (root->first_son)
+            preorder(root->first_son);
+
+        if (root->first_son)
+            if (root->first_son->right_brother)
+                for (index = root->first_son->right_brother; index; index = index->right_brother)
+                    preorder(index);
     }
 }
-/*
+
 void inorder(NodePointer root)
 {
-    
+    NodePointer index = NULL;
+
+    if (root)
+    {
+        if (root->first_son)
+            inorder(root->first_son);
+
+        printf("%i, ", root->value);
+
+        if (root->first_son)
+            if (root->first_son->right_brother)
+                for (index = root->first_son->right_brother; index; index = index->right_brother)
+                    inorder(index);
+    }
 }
+
 void postorder(NodePointer root)
 {
-    
+    NodePointer index = NULL;
+
+    if (root)
+    {
+        if (root->first_son)
+            postorder(root->first_son);
+
+        if (root->first_son)
+            if (root->first_son->right_brother)
+                for (index = root->first_son->right_brother; index; index = index->right_brother)
+                    postorder(index);
+
+        printf("%i, ", root->value);
+    }
 }
+
 int height_tree(NodePointer root)
 {
+    NodePointer index = NULL;
+    int left_max = 0, right_max = 0;
+
+    if (!root)
+        return 0;
+    else
+    {
+        if (root->first_son)
+        {
+            left_max = height_tree(root->first_son);
+
+            if (root->first_son->right_brother)
+                for (index = root->first_son->right_brother; index; index = index->right_brother)
+                    right_max = max(right_max, height_tree(index));
+        }
+    }
+
+    return 1 + max(left_max, right_max);
 }
+
 int degree_tree(NodePointer root)
 {
+    NodePointer index = NULL;
+    int degree = 1;
+
+    if (!root)
+        return 0;
+
+    if (!root->first_son)
+    {
+        return 0;
+    }
+
+    if (root->first_son->right_brother)
+    {
+        for (index = root->first_son->right_brother; index; index = index->right_brother)
+            degree += 1;
+
+        return degree;
+    }
+
+    return degree;
 }
+
 int the_leftmost_brother(NodePointer root, int value)
 {
+    NodePointer node = node_pointer(root, value);
+
+    return node->father->first_son->value;
 }
+
 int the_rightmost_brother(NodePointer root, int value)
 {
+    NodePointer index = node_pointer(root, value)->father->first_son->right_brother;
+
+    for (; index->right_brother; index = index->right_brother)
+        ;
+
+    return index->value;
 }
+
 int number_of_siblings(NodePointer root, int value)
 {
+    NodePointer node = node_pointer(root, value);
+    
+
+    return degree_tree(node->father) - 1;
 }
-*/
+
+int depth_of_node(NodePointer root, int value)
+{
+    int depth = 0;
+    NodePointer node = node_pointer(root, value);
+
+    for (; node->father; node = node->father)
+        depth += 1;
+
+    return depth;
+}
+
+int max(const int value, const int value2)
+{
+    return value > value2 ? value : value2;
+}
