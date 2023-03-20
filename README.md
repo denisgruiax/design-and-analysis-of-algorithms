@@ -51,6 +51,19 @@ I used WSL as operating system, VSCode as code editor and to compile the code i 
    https://code.visualstudio.com/docs/cpp/config-wsl
    ```
 
+5. Install framework for C unit testing and run programs.
+   ```sh
+   sudo apt install check
+   ```
+
+   ```sh
+   gcc -Wall main.c generalized-trees.c -o main
+   ```
+   
+   ```sh
+   gcc -Wall generalized-trees-test.c ../source/generalized-trees.c -o test -pthread -lcheck_pic -pthread -lrt -lm -lsubunit
+   ```
+
 ## Learning. 🌟
 https://sites.google.com/site/razvanaciu/limbaje-formale-si-tehnici-de-compilare
 
