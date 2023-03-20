@@ -27,6 +27,17 @@ void set_up()
 
     add_son(tree, 4, 12);
     add_son(tree, 4, 13);
+
+    add_son(tree, 15, 16);
+
+    add_son(tree, 16, 17);
+    add_son(tree, 16, 18);
+
+    add_son(tree, 17, 19);
+
+    add_son(tree, 18, 20);
+
+    add_son(tree, 20, 21);
 }
 
 void tear_down()
@@ -119,8 +130,28 @@ START_TEST(right_brother_test)
 }
 END_TEST
 
-/*Application 1 requirement*/
+Suite *generalized_trees_suite(void)
+{
+    Suite *suite;
+    TCase *generalized_trees_cases;
 
+    suite = suite_create("generalized_trees_suite");
+    generalized_trees_cases = tcase_create("generalized_trees");
+
+    tcase_add_test(generalized_trees_cases, node_pointer_test);
+    tcase_add_test(generalized_trees_cases, create_root_test);
+    tcase_add_test(generalized_trees_cases, add_son_test);
+    tcase_add_test(generalized_trees_cases, initialize_tree_test);
+    tcase_add_test(generalized_trees_cases, father_test);
+    tcase_add_test(generalized_trees_cases, first_son_test);
+    tcase_add_test(generalized_trees_cases, right_brother_test);
+
+    suite_add_tcase(suite, generalized_trees_cases);
+
+    return suite;
+}
+
+/*Application 1 requirement*/
 START_TEST(insert_root_test)
 {
     set_up();
@@ -160,7 +191,7 @@ START_TEST(delete_value_test)
 
     ck_assert_int_eq(delete_value(&tree, 1), 1);
     ck_assert_ptr_eq(tree, NULL);
-    
+
     tear_down();
 }
 END_TEST
@@ -169,39 +200,167 @@ START_TEST(delete_value_test2)
 {
     set_up();
 
-    print_value(tree);
-
     ck_assert_int_eq(delete_value(&tree, 4), 1);
     ck_assert_int_eq(delete_value(&tree, 15), 1);
-
-    puts("after deletions\n");
-    print_value(tree);
-
 
     tear_down();
 }
 END_TEST
 
-Suite *generalized_trees_suite(void)
+START_TEST(height_tree_test)
 {
-    Suite *suite;
-    TCase *generalized_trees_cases;
+    set_up();
 
-    suite = suite_create("generalized_trees_suite");
-    generalized_trees_cases = tcase_create("generalized_trees");
+    GeneralizedTree *root = NULL;
+    create_root(&root, 0);
 
-    tcase_add_test(generalized_trees_cases, node_pointer_test);
-    tcase_add_test(generalized_trees_cases, create_root_test);
-    tcase_add_test(generalized_trees_cases, add_son_test);
-    tcase_add_test(generalized_trees_cases, initialize_tree_test);
-    tcase_add_test(generalized_trees_cases, father_test);
-    tcase_add_test(generalized_trees_cases, first_son_test);
-    tcase_add_test(generalized_trees_cases, right_brother_test);
+    ck_assert_int_eq(height_tree(root), 0);
+    ck_assert_int_eq(height_tree(tree), 5);
 
-    suite_add_tcase(suite, generalized_trees_cases);
+    add_son(tree, 8, 22);
+    add_son(tree, 22, 23);
+    add_son(tree, 23, 24);
+    add_son(tree, 24, 25);
+    ck_assert_int_eq(height_tree(tree), 6);
 
-    return suite;
+    add_son(tree, 25, 26);
+    add_son(tree, 26, 27);
+    ck_assert_int_eq(height_tree(tree), 8);
+
+    add_son(tree, 27, 28);
+    add_son(tree, 28, 29);
+    add_son(tree, 29, 30);
+    ck_assert_int_eq(height_tree(tree), 11);
+
+    root = initialize_tree(root);
+
+    tear_down();
 }
+END_TEST
+
+START_TEST(degree_tree_test)
+{
+    set_up();
+
+    ck_assert_int_eq(degree_tree(tree), 5);
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 2)), 3);
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 3)), 4);
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 15)), 1);
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 16)), 2);
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 17)), 1);
+
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 21)), 0);
+
+    ck_assert_int_eq(degree_tree(node_pointer(tree, 25)), -1);
+
+    tear_down();
+}
+END_TEST
+
+START_TEST(the_leftmost_brother_test)
+{
+    set_up();
+
+    ck_assert_int_eq(the_leftmost_brother(tree, 11), 8);
+    ck_assert_int_eq(the_leftmost_brother(tree, 13), 12);
+    ck_assert_int_eq(the_leftmost_brother(tree, 7), 5);
+
+    ck_assert_int_eq(the_leftmost_brother(tree, 1), -1);
+    ck_assert_int_eq(the_leftmost_brother(tree, 16), -1);
+    ck_assert_int_eq(the_leftmost_brother(tree, 26), -1);
+    ck_assert_int_eq(the_leftmost_brother(tree, 1013), -1);
+
+    tear_down();
+}
+END_TEST
+
+START_TEST(the_rightmost_brother_test)
+{
+    set_up();
+
+    ck_assert_int_eq(the_rightmost_brother(tree, 8), 11);
+    ck_assert_int_eq(the_rightmost_brother(tree, 5), 7);
+    ck_assert_int_eq(the_rightmost_brother(tree, 12), 13);
+
+    ck_assert_int_eq(the_rightmost_brother(tree, 1), -1);
+    ck_assert_int_eq(the_rightmost_brother(tree, 16), -1);
+    ck_assert_int_eq(the_rightmost_brother(tree, 17), 18);
+    ck_assert_int_eq(the_rightmost_brother(tree, 21), -1);
+    ck_assert_int_eq(the_rightmost_brother(tree, 1013), -1);
+
+    tear_down();
+}
+END_TEST
+
+START_TEST(number_of_siblings_test)
+{
+    set_up();
+
+    ck_assert_int_eq(number_of_siblings(tree, 1), -1);
+
+    ck_assert_int_eq(number_of_siblings(tree, 19), 1);
+    ck_assert_int_eq(number_of_siblings(tree, 20), 1);
+
+    ck_assert_int_eq(number_of_siblings(tree, 2), 5);
+    ck_assert_int_eq(number_of_siblings(tree, 3), 5);
+    ck_assert_int_eq(number_of_siblings(tree, 4), 5);
+    ck_assert_int_eq(number_of_siblings(tree, 15), 5);
+
+    ck_assert_int_eq(number_of_siblings(tree, 8), 4);
+    ck_assert_int_eq(number_of_siblings(tree, 10), 4);
+    ck_assert_int_eq(number_of_siblings(tree, 13), 2);
+    ck_assert_int_eq(number_of_siblings(tree, 7), 3);
+
+    tear_down();
+}
+END_TEST
+
+START_TEST(depth_of_node_test)
+{
+    set_up();
+
+    ck_assert_int_eq(depth_of_node(tree), 0);
+
+    add_son(tree, 8, 20);
+    add_son(tree, 20, 21);
+    add_son(tree, 20, 22);
+    ck_assert_int_eq(depth_of_node(node_pointer(tree, 4)), 1);
+
+    add_son(tree, 15, 30);
+    add_son(tree, 30, 31);
+    add_son(tree, 31, 32);
+    add_son(tree, 32, 33);
+    add_son(tree, 33, 34);
+    ck_assert_int_eq(depth_of_node(node_pointer(tree, 34)), 6);
+
+    add_son(tree, 34, 35);
+    add_son(tree, 35, 36);
+    add_son(tree, 36, 37);
+    add_son(tree, 37, 38);
+    add_son(tree, 38, 39);
+    ck_assert_int_eq(depth_of_node(node_pointer(tree, 39)), 11);
+
+    tear_down();
+}
+END_TEST
+
+START_TEST(number_of_siblings_at_same_depth_test)
+{
+    set_up();
+
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 0), 1);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 1), 5);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 2), 10);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 3), 2);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 4), 2);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 5), 1);
+
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 17), 0);
+    ck_assert_int_eq(number_of_siblings_at_same_depth(tree, 103), 0);
+
+    tear_down();
+}
+END_TEST
 
 Suite *application1_suite(void)
 {
@@ -215,6 +374,13 @@ Suite *application1_suite(void)
     tcase_add_test(application1_cases, search_value_test);
     tcase_add_test(application1_cases, delete_value_test);
     tcase_add_test(application1_cases, delete_value_test2);
+    tcase_add_test(application1_cases, height_tree_test);
+    tcase_add_test(application1_cases, depth_of_node_test);
+    tcase_add_test(application1_cases, the_leftmost_brother_test);
+    tcase_add_test(application1_cases, the_rightmost_brother_test);
+    tcase_add_test(application1_cases, number_of_siblings_test);
+    tcase_add_test(application1_cases, degree_tree_test);
+    tcase_add_test(application1_cases, number_of_siblings_at_same_depth_test);
 
     suite_add_tcase(suite, application1_cases);
 

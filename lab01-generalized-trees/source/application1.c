@@ -179,87 +179,145 @@ void postorder(NodePointer root)
 
 int height_tree(NodePointer root)
 {
+    return height_tree_recursive(root) - 1;
+}
+
+static int height_tree_recursive(NodePointer root)
+{
     NodePointer index = NULL;
-    int left_max = 0, right_max = 0;
+    int height_max = 0;
 
-    if (!root)
-        return 0;
-    else
-    {
-        if (root->first_son)
-        {
-            left_max = height_tree(root->first_son);
+    if (root->first_son)
+        for (index = root->first_son; index; index = index->right_brother)
+            height_max = max(height_max, height_tree_recursive(index));
 
-            if (root->first_son->right_brother)
-                for (index = root->first_son->right_brother; index; index = index->right_brother)
-                    right_max = max(right_max, height_tree(index));
-        }
-    }
+    ++height_max;
 
-    return 1 + max(left_max, right_max);
+    return height_max;
 }
 
 int degree_tree(NodePointer root)
 {
-    NodePointer index = NULL;
-    int degree = 1;
-
     if (!root)
-        return 0;
+        return -1;
 
-    if (!root->first_son)
+    if (root->first_son)
     {
-        return 0;
+        if (!root->first_son->right_brother)
+            return 1;
     }
+    else
+        return 0;
 
     if (root->first_son->right_brother)
-    {
-        for (index = root->first_son->right_brother; index; index = index->right_brother)
-            degree += 1;
+        return degree_tree_tail_recursive(root->first_son->right_brother, 1);
+}
 
+static int degree_tree_tail_recursive(NodePointer node, int degree)
+{
+    if (!node)
         return degree;
-    }
 
-    return degree;
+    degree_tree_tail_recursive(node->right_brother, ++degree);
 }
 
 int the_leftmost_brother(NodePointer root, int value)
 {
     NodePointer node = node_pointer(root, value);
+    if (node)
+        if (node->father)
+            if (node->father->first_son)
+                if (node->father->first_son->value != value)
+                    return node->father->first_son->value;
 
-    return node->father->first_son->value;
+    return -1;
 }
 
 int the_rightmost_brother(NodePointer root, int value)
 {
-    NodePointer index = node_pointer(root, value)->father->first_son->right_brother;
+    NodePointer index = node_pointer(root, value);
 
-    for (; index->right_brother; index = index->right_brother)
-        ;
+    if (index)
+        if (index->father)
+            if (index->first_son)
+                index = index->father->first_son;
 
-    return index->value;
+    if (index)
+        for (; index->right_brother; index = index->right_brother)
+            ;
+
+    if (index)
+        if (index->value != value)
+            return index->value;
+
+    return -1;
 }
 
 int number_of_siblings(NodePointer root, int value)
 {
     NodePointer node = node_pointer(root, value);
-    
 
-    return degree_tree(node->father) - 1;
+    if (!node)
+        return -1;
+
+    node = node->father;
+
+    if (node)
+        if (node->first_son)
+        {
+            if (!root->first_son->right_brother)
+                return 1;
+
+            return number_of_siblings_tail_recursive(node->first_son, 0);
+        }
+
+    return -1;
 }
 
-int depth_of_node(NodePointer root, int value)
+static int number_of_siblings_tail_recursive(NodePointer node, int siblings)
 {
-    int depth = 0;
-    NodePointer node = node_pointer(root, value);
+    if (!node)
+        return siblings;
 
-    for (; node->father; node = node->father)
-        depth += 1;
+    number_of_siblings_tail_recursive(node->right_brother, ++siblings);
+}
 
-    return depth;
+int depth_of_node(NodePointer node)
+{
+    return depth_of_node_tail_recursive(node, -1);
+}
+
+static int depth_of_node_tail_recursive(NodePointer node, int accumulator)
+{
+    if (!node)
+        return accumulator;
+
+    return depth_of_node_tail_recursive(node->father, ++accumulator);
 }
 
 int max(const int value, const int value2)
 {
     return value > value2 ? value : value2;
+}
+
+int number_of_siblings_at_same_depth(NodePointer root, int depth)
+{
+    return number_of_siblings_at_same_depth_recursive(root, depth);
+}
+
+static int number_of_siblings_at_same_depth_recursive(NodePointer root, int depth)
+{
+    int count = 0;
+    NodePointer son = root->first_son;
+
+    if (!root)
+        return 0;
+
+    if (!depth)
+        return 1;
+
+    for (; son; son = son->right_brother)
+        count += number_of_siblings_at_same_depth_recursive(son, depth - 1);
+
+    return count;
 }
