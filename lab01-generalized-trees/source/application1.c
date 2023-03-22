@@ -20,6 +20,12 @@ Application 1
 #include <stdio.h>
 #include <stdlib.h>
 
+static int height_tree_recursive(NodePointer root);
+static int degree_tree_tail_recursive(NodePointer root, int degree);
+static int number_of_siblings_tail_recursive(NodePointer node, int siblings);
+static int depth_of_node_tail_recursive(NodePointer node, int accumulator);
+static int number_of_siblings_at_same_depth_recursive(NodePointer root, int depth);
+
 void insert_root(NodePointer *root, int value)
 {
     *root = initialize_tree(*root);
@@ -191,7 +197,7 @@ static int height_tree_recursive(NodePointer root)
         for (index = root->first_son; index; index = index->right_brother)
             height_max = max(height_max, height_tree_recursive(index));
 
-    ++height_max;
+    height_max++;
 
     return height_max;
 }
@@ -211,6 +217,8 @@ int degree_tree(NodePointer root)
 
     if (root->first_son->right_brother)
         return degree_tree_tail_recursive(root->first_son->right_brother, 1);
+
+    return 0;
 }
 
 static int degree_tree_tail_recursive(NodePointer node, int degree)
@@ -218,7 +226,7 @@ static int degree_tree_tail_recursive(NodePointer node, int degree)
     if (!node)
         return degree;
 
-    degree_tree_tail_recursive(node->right_brother, ++degree);
+    return degree_tree_tail_recursive(node->right_brother, ++degree);
 }
 
 int the_leftmost_brother(NodePointer root, int value)
@@ -279,7 +287,7 @@ static int number_of_siblings_tail_recursive(NodePointer node, int siblings)
     if (!node)
         return siblings;
 
-    number_of_siblings_tail_recursive(node->right_brother, ++siblings);
+    return number_of_siblings_tail_recursive(node->right_brother, ++siblings);
 }
 
 int depth_of_node(NodePointer node)

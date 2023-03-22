@@ -5,6 +5,15 @@ Solved exercises of the Design and Analysis of Algorithms class.
 **I do not guarantee the correctness of the code!** ❌
 
 ## About the project. 🪴
+
+- ✅ All the necessary operations have been implemented.
+- ✅ They were tested with some unit tests.
+- ❌ Test coverage is not 100%.
+
+### How to improve the code:
+- 👀 Refactoring for better code readability
+- 🪜 Better algorithms (+ recursion)
+- 🔁 Better unit tests
 ### Purpose. 🎯
 The purpose of this programs is to test the ability to solve problems that consist in the basics of working with: 📚
 ```sh

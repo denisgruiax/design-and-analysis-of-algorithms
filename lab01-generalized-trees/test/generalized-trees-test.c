@@ -72,6 +72,8 @@ START_TEST(create_root_test)
     ck_assert_int_eq(son1->value, 2);
     ck_assert_int_eq(son2->value, 3);
     ck_assert_int_eq(son3->value, 4);
+
+    tear_down();
 }
 END_TEST
 
