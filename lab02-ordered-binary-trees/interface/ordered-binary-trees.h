@@ -33,3 +33,5 @@ int greatest_node(OrderedBinaryTree tree);
 
 int height(OrderedBinaryTree tree);
 void display_on_levels(OrderedBinaryTree tree);
+
+OrderedBinaryTree symmetric(OrderedBinaryTree tree);
