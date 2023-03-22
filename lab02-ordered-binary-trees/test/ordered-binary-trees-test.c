@@ -96,6 +96,99 @@ START_TEST(suppress_test)
 }
 END_TEST
 
+START_TEST(smallest_node_test)
+{
+    set_up();
+    ck_assert_int_eq(smallest_node(tree), 4);
+    tear_down();
+}
+END_TEST
+
+START_TEST(greatest_node_test)
+{
+    set_up();
+    ck_assert_int_eq(greatest_node(tree), 22);
+    tear_down();
+}
+END_TEST
+
+START_TEST(same_geometric_shape_test)
+{
+    OrderedBinaryTree tree = NULL, tree2 = NULL;
+
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    add(&tree, 10);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 0);
+
+    add(&tree2, 10);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    add(&tree, 7);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 0);
+
+    add(&tree2, 7);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    add(&tree, 12);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 0);
+    
+    add(&tree2, 12);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    add(&tree, 8);
+    add(&tree2, 8);
+    add(&tree, 6);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 0);
+
+    add(&tree2, 6);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    add(&tree, 11);
+    add(&tree2, 11);
+    ck_assert_int_eq(same_geometric_shape(tree, tree2), 1);
+
+    tree = initialize(&tree);
+    tree2 = initialize(&tree2);
+}
+END_TEST
+
+START_TEST(height_test)
+{
+    OrderedBinaryTree tree = NULL;
+
+    ck_assert_int_eq(height(tree), -1);
+
+    add(&tree, 10);
+    ck_assert_int_eq(height(tree), 0);
+
+    add(&tree, 7);
+    ck_assert_int_eq(height(tree), 1);
+
+    add(&tree, 12);
+    ck_assert_int_eq(height(tree), 1);
+
+    add(&tree, 8);
+    ck_assert_int_eq(height(tree), 2);
+
+    add(&tree, 11);
+    ck_assert_int_eq(height(tree), 2);
+
+    add(&tree, 14);
+    add(&tree, 16);
+
+    ck_assert_int_eq(height(tree), 3);
+
+    add(&tree, 17);
+    add(&tree, 18);
+    add(&tree, 19);
+    add(&tree, 20);
+    ck_assert_int_eq(height(tree), 7);
+
+    tree = initialize(&tree);
+}
+END_TEST
+
 Suite *ordered_binary_trees_suite(void)
 {
     Suite *suite;
@@ -108,6 +201,10 @@ Suite *ordered_binary_trees_suite(void)
     tcase_add_test(ordered_binary_trees_cases, initialize_test);
     tcase_add_test(ordered_binary_trees_cases, search_test);
     tcase_add_test(ordered_binary_trees_cases, suppress_test);
+    tcase_add_test(ordered_binary_trees_cases, smallest_node_test);
+    tcase_add_test(ordered_binary_trees_cases, greatest_node_test);
+    tcase_add_test(ordered_binary_trees_cases, same_geometric_shape_test);
+    tcase_add_test(ordered_binary_trees_cases, height_test);
 
     suite_add_tcase(suite, ordered_binary_trees_cases);
 

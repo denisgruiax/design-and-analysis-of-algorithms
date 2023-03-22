@@ -15,7 +15,6 @@ struct Node
 
 typedef struct Node *OrderedBinaryTree;
 
-void static create(OrderedBinaryTree *root, int key);
 void add(OrderedBinaryTree *root, int key);
 OrderedBinaryTree initialize(OrderedBinaryTree *root);
 
@@ -32,4 +31,5 @@ int same_geometric_shape(OrderedBinaryTree tree, OrderedBinaryTree tree2);
 int smallest_node(OrderedBinaryTree tree);
 int greatest_node(OrderedBinaryTree tree);
 
+int height(OrderedBinaryTree tree);
 void display_on_levels(OrderedBinaryTree tree);

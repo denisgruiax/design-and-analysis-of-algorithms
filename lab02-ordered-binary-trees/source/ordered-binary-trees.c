@@ -1,6 +1,12 @@
 #include "../interface/ordered-binary-trees.h"
 
-void static create(OrderedBinaryTree *root, int key)
+static int max(int value, int value2);
+static void create(OrderedBinaryTree *root, int key);
+static void display(OrderedBinaryTree tree, int h);
+static int same_geometric_shape_recursive(OrderedBinaryTree tree, OrderedBinaryTree tree2);
+static int height_recursive(OrderedBinaryTree tree);
+
+static void create(OrderedBinaryTree *root, int key)
 {
     if (!(*root))
     {
@@ -11,6 +17,55 @@ void static create(OrderedBinaryTree *root, int key)
     }
     else
         printf("Root already exists!");
+}
+
+static void display(OrderedBinaryTree tree, int h)
+{
+
+    if (tree != NULL)
+    {
+        display(tree->left, h - 1);
+
+        for (int i = 1; i <= h; i++)
+            printf("%3s", " ");
+
+        printf("%3d\n", tree->value);
+        display(tree->right, h - 1);
+    }
+}
+
+static int same_geometric_shape_recursive(OrderedBinaryTree tree, OrderedBinaryTree tree2)
+{
+    if (!tree && !tree2)
+        return 1;
+
+    if (tree && tree2)
+        return (same_geometric_shape_recursive(tree->left, tree2->left) && same_geometric_shape_recursive(tree->right, tree2->right));
+
+    return 0;
+}
+
+static int height_recursive(OrderedBinaryTree tree)
+{
+    int max_height = 0;
+
+    if (tree)
+    {
+        if (tree->left)
+            max_height = max(max_height, height_recursive(tree->left));
+
+        if (tree->right)
+            max_height = max(max_height, height_recursive(tree->right));
+
+        max_height++;
+    }
+
+    return max_height;
+}
+
+static int max(int value, int value2)
+{
+    return value > value2 ? value : value2;
 }
 
 void add(OrderedBinaryTree *root, int key)
@@ -36,9 +91,9 @@ boolean search(OrderedBinaryTree root, int key)
         return TRUE;
 
     if (key < root->value)
-        search(root->left, key);
+        return search(root->left, key);
     else
-        search(root->right, key);
+        return search(root->right, key);
 }
 
 OrderedBinaryTree initialize(OrderedBinaryTree *root)
@@ -59,12 +114,14 @@ void suppress(OrderedBinaryTree *root, int key)
         return;
 
     if (*root)
+    {
         if (key == (*root)->value)
             *root = initialize(&(*root));
         else if (key <= (*root)->value)
             suppress(&(*root)->left, key);
         else
             suppress(&(*root)->right, key);
+    }
 }
 
 void preorder(OrderedBinaryTree tree)
@@ -99,7 +156,7 @@ void postorder(OrderedBinaryTree tree)
 
 int same_geometric_shape(OrderedBinaryTree tree, OrderedBinaryTree tree2)
 {
-    return 0;
+    return same_geometric_shape_recursive(tree, tree2);
 }
 
 int smallest_node(OrderedBinaryTree tree)
@@ -110,7 +167,7 @@ int smallest_node(OrderedBinaryTree tree)
     if (!tree->left)
         return tree->value;
 
-    smallest_node(tree->left);
+    return smallest_node(tree->left);
 }
 
 int greatest_node(OrderedBinaryTree tree)
@@ -121,10 +178,32 @@ int greatest_node(OrderedBinaryTree tree)
     if (!tree->right)
         return tree->value;
 
-    greatest_node(tree->right);
+    return greatest_node(tree->right);
+}
+
+int height(OrderedBinaryTree tree)
+{
+    return height_recursive(tree) - 1;
 }
 
 void display_on_levels(OrderedBinaryTree tree)
 {
-    
+    display(tree, height(tree));
+}
+
+OrderedBinaryTree symmetric(OrderedBinaryTree tree)
+{
+    OrderedBinaryTree swapper = NULL;
+
+    if (tree)
+    {
+        symmetric(tree->left);
+        symmetric(tree->right);
+
+        swapper = tree->left;
+        tree->left = tree->right;
+        tree->right = swapper;
+    }
+
+    return tree;
 }

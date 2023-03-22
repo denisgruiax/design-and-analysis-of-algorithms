@@ -19,11 +19,13 @@ int main()
     add(&tree, 21);
     add(&tree, 22);
 
-    preorder(tree);
-    puts("\n");
+    display_on_levels(tree);
+
+    OrderedBinaryTree test = symmetric(tree); 
     
-    printf("%i\n", smallest_node(tree));
-    printf("%i\n", greatest_node(tree));
+    printf("\n");
+
+    display_on_levels(test);
 
     return 0;
 }
